@@ -17,7 +17,30 @@ import glob
 
 
 
+def X_from_excel(file, gmax=5):
+    """ Reads pedigree data and outputs a balanced table, 
+    where rows are pedigrees and columns are lineal positions. 
+    gmax is the maximum allowed number of generations"""  
+    
+    X_raw = pd.read_excel(file, index_col=[0,1])
+    X_raw = X_raw.unstack()
+    X_raw.columns = ['{}'.format(x[1]) for x in X_raw.columns]
+    
+    """ Create list of all cell id's within given generations
+    Integer id's, e.g. [1,2,3,4,5,6,7]"""
+    gmin = 1 #always start at generation 1
+    cint = range(int(2**(gmin-1)),int(2**gmax)) 
+        
+    """Convert to binary id's: ['1','10','11','100','101','110','111']"""
+    cbin  = [str(bin(i))[2:] for i in cint] 
+    cells = cbin
+    
+    """Populate new df, which has a complete list of cell id's, w/ data"""
+    X = pd.DataFrame(index=X_raw.index, columns=cells) 
+    X.update(X_raw) #fill nan's with data where available
 
+    return X
+    
 def MLEchordal(S,Morder=1):
     """Calculate Kmle from the marginals of cliques and separators in S.
     S is the sample covariance. Morder is the order of the Markov chain."""
@@ -1757,27 +1780,5 @@ def make_cov_pattern(cbin, h=0.8, sim=False):
     else:
         return cov_pattern
 
-def X_from_excel(file, gmax=5):
-    """ Reads pedigree data and outputs a balanced table, 
-    where rows are pedigrees and columns are lineal positions. 
-    gmax is the maximum allowed number of generations"""  
-    
-    X_raw = pd.read_excel(file, index_col=[0,1])
-    X_raw = X_raw.unstack()
-    X_raw.columns = ['{}'.format(x[1]) for x in X_raw.columns]
-    
-    """ Create list of all cell id's within given generations
-    Integer id's, e.g. [1,2,3,4,5,6,7]"""
-    gmin = 1 #always start at generation 1
-    cint = range(int(2**(gmin-1)),int(2**gmax)) 
-        
-    """Convert to binary id's: ['1','10','11','100','101','110','111']"""
-    cbin  = [str(bin(i))[2:] for i in cint] 
-    cells = cbin
-    
-    """Populate new df, which has a complete list of cell id's, w/ data"""
-    X = pd.DataFrame(index=X_raw.index, columns=cells) 
-    X.update(X_raw) #fill nan's with data where available
 
-    return X
     
