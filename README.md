@@ -5,5 +5,5 @@ doi: https://doi.org/10.1101/267450
 
 A test run of the code is shown in the accompanying Jupyter Notebook "LinVarMap_test.ipynb".
 
-Note that previously-published worm data should be downloaded separately 
+Note that previously-published C. elegans data should be downloaded separately 
 (see readme file in the Worm-WT folder)
